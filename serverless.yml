@@ -10,7 +10,7 @@ provider:
     role: arn:aws:iam::111222333444:role/LabRole # PONER EL ID
   environment:
     PRODUCTS_TABLE: t_productos_${sls:stage}
-    TOKENS_TABLE: t_tokens_acceso # CAMBIAR ESTO A LA TABLA DE TOKENS EN DYNAMO
+    TOKENS_TABLE: t_tokens_acceso # CAMBIAR ESTO A LA TABLA DE TOKENS EN DYNAMO, ESTO SE LE PUEDE AGREGAR LO DE sls:stage EN UN FUTURO
 
 functions:
   ListarProductos:
