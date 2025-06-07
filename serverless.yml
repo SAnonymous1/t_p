@@ -1,4 +1,4 @@
-org: sergioricce
+org: name # PONER TU ORG
 service: api-productos
 
 provider:
@@ -7,7 +7,7 @@ provider:
   memorySize: 1024
   timeout: 30
   iam:
-    role: arn:aws:iam::342927925152:role/LabRole	
+    role: arn:aws:iam::111222333444:role/LabRole # PONER EL ID
   environment:
     PRODUCTS_TABLE: t_productos_${sls:stage}
     TOKENS_TABLE: t_tokens_acceso # CAMBIAR ESTO A LA TABLA DE TOKENS EN DYNAMO
