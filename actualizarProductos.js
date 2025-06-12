@@ -1,38 +1,36 @@
 const AWS = require('aws-sdk');
-const firehose = new AWS.Firehose();
+const s3 = new AWS.S3();
 
 exports.handler = async (event) => {
-  const records = event.Records.map(r => {
-    const newImage = r.dynamodb.NewImage
+  const registros = event.Records.map((r) => ({
+    eventID: r.eventID,
+    eventName: r.eventName,
+    timestamp: r.dynamodb.ApproximateCreationDateTime,
+    newImage: r.dynamodb.NewImage
       ? AWS.DynamoDB.Converter.unmarshall(r.dynamodb.NewImage)
-      : null;
-    const oldImage = r.dynamodb.OldImage
+      : null,
+    oldImage: r.dynamodb.OldImage
       ? AWS.DynamoDB.Converter.unmarshall(r.dynamodb.OldImage)
-      : null;
+      : null
+  }));
 
-    return {
-      Data: JSON.stringify({
-        eventName:  r.eventName,
-        timestamp:  r.dynamodb.ApproximateCreationDateTime,
-        newImage,
-        oldImage
-      }) + '\n'
-    };
-  });
+  const bucket = process.env.REGISTRO_BUCKET;
+  const timestamp = Date.now();
+  const key = `registros/productos-${timestamp}.json`;
 
   try {
-    const resp = await firehose.putRecordBatch({
-      DeliveryStreamName: process.env.FIREHOSE_STREAM,
-      Records: records
+    await s3.putObject({
+      Bucket: bucket,
+      Key: key,
+      Body: JSON.stringify(registros, null, 2),
+      ContentType: 'application/json'
     }).promise();
 
-    console.log(`Enviados ${records.length - resp.FailedPutCount}/${records.length} registros a Firehose`);
-    if (resp.FailedPutCount > 0) {
-      console.error('Errores:', resp.RequestResponses.filter(r => r.ErrorMessage));
-    }
+    console.log(`Guardado en S3: ${key}`);
   } catch (err) {
-    console.error('Error en putRecordBatch:', err);
+    console.error('Error al guardar en S3:', err);
     throw err;
   }
 };
+
 
