@@ -1,4 +1,4 @@
-org: name # PONER TU ORG
+org: sergioricce
 service: api-productos
 
 provider:
@@ -7,10 +7,11 @@ provider:
   memorySize: 1024
   timeout: 30
   iam:
-    role: arn:aws:iam::111222333444:role/LabRole # PONER EL ID
+    role: arn:aws:iam::342927925152:role/LabRole
   environment:
     PRODUCTS_TABLE: t_productos_${sls:stage}
-    TOKENS_TABLE: t_tokens_acceso # CAMBIAR ESTO A LA TABLA DE TOKENS EN DYNAMO, ESTO SE LE PUEDE AGREGAR LO DE sls:stage EN UN FUTURO
+    TOKENS_TABLE: t_tokens_acceso
+    FIREHOSE_STREAM: firehose-productos-${sls:stage}
 
 functions:
   ListarProductos:
@@ -24,9 +25,10 @@ functions:
           request:
             template:
               application/json: |
-                {
-                  "headers": {#foreach($h in $input.params().header.keySet())
-                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end#end
+                { "headers": { 
+                    #foreach($h in $input.params().header.keySet())
+                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
+                    #end
                   },
                   "body": $input.json('$')
                 }
@@ -47,12 +49,15 @@ functions:
           request:
             template:
               application/json: |
-                {
-                  "headers": { #foreach($h in $input.params().header.keySet()) "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end #end },
+                { "headers": { 
+                    #foreach($h in $input.params().header.keySet())
+                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
+                    #end
+                  },
                   "body": $input.json('$')
                 }
           response:
-            statusCodes: 
+            statusCodes:
               200:
                 pattern: ''
                 template: $input.body
@@ -68,8 +73,11 @@ functions:
           request:
             template:
               application/json: |
-                {
-                  "headers": { #foreach($h in $input.params().header.keySet()) "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end #end },
+                { "headers": { 
+                    #foreach($h in $input.params().header.keySet())
+                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
+                    #end
+                  },
                   "body": $input.json('$')
                 }
           response:
@@ -89,8 +97,7 @@ functions:
           request:
             template:
               application/json: |
-                {
-                  "headers": {
+                { "headers": { 
                     #foreach($h in $input.params().header.keySet())
                     "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
                     #end
@@ -114,11 +121,9 @@ functions:
           request:
             template:
               application/json: |
-                {
-                  "headers": {
+                { "headers": { 
                     #foreach($h in $input.params().header.keySet())
-                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"
-                    #if($foreach.hasNext),#end
+                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
                     #end
                   },
                   "body": $input.json('$')
@@ -128,6 +133,20 @@ functions:
               200:
                 pattern: ''
                 template: $input.body
+
+  actualizarProductos:
+    handler: src/actualizarProductos.handler
+    description: Procesa DynamoDB Stream y envía a Kinesis Data Firehose
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - ProductsDynamoDBTable
+              - StreamArn
+          batchSize: 100
+          startingPosition: LATEST
+
 resources:
   Resources:
     ProductsDynamoDBTable:
@@ -145,3 +164,57 @@ resources:
           - AttributeName: producto_id
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    ProductosBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: productos-ingesta-${sls:stage}
+    ProductosFirehose:
+      Type: AWS::KinesisFirehose::DeliveryStream
+      Properties:
+        DeliveryStreamName: firehose-productos-${sls:stage}
+        S3DestinationConfiguration:
+          BucketARN: !GetAtt ProductosBucket.Arn
+          RoleARN: arn:aws:iam::342927925152:role/LabRole
+          BufferingHints:
+            IntervalInSeconds: 60
+            SizeInMBs: 5
+    ProductsStreamPolicy:
+      Type: AWS::IAM::Policy
+      Properties:
+        PolicyName: ProductsStreamPolicy
+        Roles:
+          - arn:aws:iam::342927925152:role/LabRole
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:DescribeStream
+                - dynamodb:GetRecords
+                - dynamodb:GetShardIterator
+                - dynamodb:ListStreams
+              Resource: !GetAtt ProductsDynamoDBTable.StreamArn
+            - Effect: Allow
+              Action:
+                - firehose:PutRecord
+                - firehose:PutRecordBatch
+              Resource: !GetAtt ProductosFirehose.Arn
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+              Resource:
+                - Fn::Join:
+                    - ""
+                    - - !GetAtt ProductosBucket.Arn
+                      - "/*"
+
+  Outputs:
+    ProductsTableName:
+      Value: !Ref ProductsDynamoDBTable
+    FirehoseName:
+      Value: !GetAtt ProductosFirehose.DeliveryStreamName
+    IngestBucket:
+      Value: !Ref ProductosBucket
+
