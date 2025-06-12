@@ -11,7 +11,7 @@ provider:
   environment:
     PRODUCTS_TABLE: t_productos_${sls:stage}
     TOKENS_TABLE: t_tokens_acceso
-    FIREHOSE_STREAM: firehose-productos-${sls:stage}
+    REGISTRO_BUCKET: productos-ingesta-${sls:stage}
 
 functions:
   ListarProductos:
@@ -25,9 +25,11 @@ functions:
           request:
             template:
               application/json: |
-                { "headers": { 
+                {
+                  "headers": {
                     #foreach($h in $input.params().header.keySet())
-                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
+                      "$h": "$util.escapeJavaScript($input.params().header.get($h))"
+                      #if($foreach.hasNext),#end
                     #end
                   },
                   "body": $input.json('$')
@@ -49,9 +51,11 @@ functions:
           request:
             template:
               application/json: |
-                { "headers": { 
+                {
+                  "headers": {
                     #foreach($h in $input.params().header.keySet())
-                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
+                      "$h": "$util.escapeJavaScript($input.params().header.get($h))"
+                      #if($foreach.hasNext),#end
                     #end
                   },
                   "body": $input.json('$')
@@ -73,9 +77,11 @@ functions:
           request:
             template:
               application/json: |
-                { "headers": { 
+                {
+                  "headers": {
                     #foreach($h in $input.params().header.keySet())
-                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
+                      "$h": "$util.escapeJavaScript($input.params().header.get($h))"
+                      #if($foreach.hasNext),#end
                     #end
                   },
                   "body": $input.json('$')
@@ -97,9 +103,11 @@ functions:
           request:
             template:
               application/json: |
-                { "headers": { 
+                {
+                  "headers": {
                     #foreach($h in $input.params().header.keySet())
-                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
+                      "$h": "$util.escapeJavaScript($input.params().header.get($h))"
+                      #if($foreach.hasNext),#end
                     #end
                   },
                   "body": $input.json('$')
@@ -121,9 +129,11 @@ functions:
           request:
             template:
               application/json: |
-                { "headers": { 
+                {
+                  "headers": {
                     #foreach($h in $input.params().header.keySet())
-                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
+                      "$h": "$util.escapeJavaScript($input.params().header.get($h))"
+                      #if($foreach.hasNext),#end
                     #end
                   },
                   "body": $input.json('$')
@@ -136,19 +146,18 @@ functions:
 
   actualizarProductos:
     handler: src/actualizarProductos.handler
-    description: Procesa DynamoDB Stream y envía a Kinesis Data Firehose
+    description: Procesa DynamoDB Stream y guarda eventos en S3
     events:
       - stream:
           type: dynamodb
           arn:
-            Fn::GetAtt:
-              - ProductsDynamoDBTable
-              - StreamArn
+            Fn::GetAtt: [ ProductsDynamoDBTable, StreamArn ]
           batchSize: 100
           startingPosition: LATEST
 
 resources:
   Resources:
+
     ProductsDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -166,20 +175,12 @@ resources:
         BillingMode: PAY_PER_REQUEST
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+
     ProductosBucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: productos-ingesta-${sls:stage}
-    ProductosFirehose:
-      Type: AWS::KinesisFirehose::DeliveryStream
-      Properties:
-        DeliveryStreamName: firehose-productos-${sls:stage}
-        S3DestinationConfiguration:
-          BucketARN: !GetAtt ProductosBucket.Arn
-          RoleARN: arn:aws:iam::342927925152:role/LabRole
-          BufferingHints:
-            IntervalInSeconds: 60
-            SizeInMBs: 5
+
     ProductsStreamPolicy:
       Type: AWS::IAM::Policy
       Properties:
@@ -198,11 +199,6 @@ resources:
               Resource: !GetAtt ProductsDynamoDBTable.StreamArn
             - Effect: Allow
               Action:
-                - firehose:PutRecord
-                - firehose:PutRecordBatch
-              Resource: !GetAtt ProductosFirehose.Arn
-            - Effect: Allow
-              Action:
                 - s3:PutObject
               Resource:
                 - Fn::Join:
@@ -210,11 +206,8 @@ resources:
                     - - !GetAtt ProductosBucket.Arn
                       - "/*"
 
-  Outputs:
-    ProductsTableName:
-      Value: !Ref ProductsDynamoDBTable
-    FirehoseName:
-      Value: !GetAtt ProductosFirehose.DeliveryStreamName
-    IngestBucket:
-      Value: !Ref ProductosBucket
+outputs:
+  ProductosBucketName:
+    Description: Bucket donde se guardan los cambios en productos
+    Value: !Ref ProductosBucket
 
