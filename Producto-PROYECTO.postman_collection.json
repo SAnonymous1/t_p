@@ -1,0 +1,205 @@
+{
+	"info": {
+		"_postman_id": "c59aa8f3-b0d3-4f75-810d-0d76f82b8b3f",
+		"name": "Producto-PROYECTO",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26899500"
+	},
+	"item": [
+		{
+			"name": "listar",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "e7650b3d-5f8c-418a-ba63-8013b990c9b9",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tenant_id\" : \"Ej1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://8x6ueb3uub.execute-api.us-east-1.amazonaws.com/dev/productos/listar",
+					"protocol": "https",
+					"host": [
+						"8x6ueb3uub",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"productos",
+						"listar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "crear",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "e7650b3d-5f8c-418a-ba63-8013b990c9b9",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tenant_id\": \"Ej1\",\r\n  \"producto_id\": \"producto1\",\r\n  \"description\": \"Tabletas de ibuprofeno, caja x 20 unidades\",\r\n  \"price\": 15.50,\r\n  \"stock\": 120,\r\n  \"category\": \"Analgésicos\",\r\n  \"tags\": [\"analgésico\", \"antiinflamatorio\"]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://8x6ueb3uub.execute-api.us-east-1.amazonaws.com/dev/productos/crear",
+					"protocol": "https",
+					"host": [
+						"8x6ueb3uub",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"productos",
+						"crear"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "buscar",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "e7650b3d-5f8c-418a-ba63-8013b990c9b9",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tenant_id\": \"Ej1\",\r\n  \"producto_id\": \"producto1\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://8x6ueb3uub.execute-api.us-east-1.amazonaws.com/dev/productos/buscar",
+					"protocol": "https",
+					"host": [
+						"8x6ueb3uub",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"productos",
+						"buscar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "modificar",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "e7650b3d-5f8c-418a-ba63-8013b990c9b9",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tenant_id\": \"Ej1\",\r\n  \"producto_id\": \"producto1\",\r\n  \"datos\": {\r\n    \"price\": 18.00,\r\n    \"stock\": 100,\r\n    \"description\": \"Tabletas de ibuprofeno, caja x 30 unidades\"\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://8x6ueb3uub.execute-api.us-east-1.amazonaws.com/dev/productos/modificar",
+					"protocol": "https",
+					"host": [
+						"8x6ueb3uub",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"productos",
+						"modificar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "eliminar",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "e7650b3d-5f8c-418a-ba63-8013b990c9b9",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tenant_id\": \"Ej1\",\r\n  \"producto_id\": \"producto1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://8x6ueb3uub.execute-api.us-east-1.amazonaws.com/dev/productos/eliminar",
+					"protocol": "https",
+					"host": [
+						"8x6ueb3uub",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"productos",
+						"eliminar"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

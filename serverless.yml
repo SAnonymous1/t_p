@@ -1,0 +1,147 @@
+org: name
+service: api-productos
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  memorySize: 1024
+  timeout: 30
+  iam:
+    role: arn:aws:iam::111222333444:role/LabRole # PONER EL ID
+  environment:
+    PRODUCTS_TABLE: t_productos_${sls:stage}
+    TOKENS_TABLE: t_tokens_acceso # CAMBIAR ESTO A LA TABLA DE TOKENS EN DYNAMO, ESTO SE LE PUEDE AGREGAR LO DE sls:stage EN UN FUTURO
+
+functions:
+  ListarProductos:
+    handler: src/ListarProductos.ListarProductos
+    events:
+      - http:
+          path: productos/listar
+          method: post
+          cors: true
+          integration: lambda
+          request:
+            template:
+              application/json: |
+                {
+                  "headers": {#foreach($h in $input.params().header.keySet())
+                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end#end
+                  },
+                  "body": $input.json('$')
+                }
+          response:
+            statusCodes:
+              200:
+                pattern: ''
+                template: $input.body
+
+  CrearProducto:
+    handler: src/CrearProducto.CrearProducto
+    events:
+      - http:
+          path: productos/crear
+          method: post
+          cors: true
+          integration: lambda
+          request:
+            template:
+              application/json: |
+                {
+                  "headers": { #foreach($h in $input.params().header.keySet()) "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end #end },
+                  "body": $input.json('$')
+                }
+          response:
+            statusCodes: 
+              200:
+                pattern: ''
+                template: $input.body
+
+  BuscarProducto:
+    handler: src/BuscarProducto.BuscarProducto
+    events:
+      - http:
+          path: productos/buscar
+          method: post
+          cors: true
+          integration: lambda
+          request:
+            template:
+              application/json: |
+                {
+                  "headers": { #foreach($h in $input.params().header.keySet()) "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end #end },
+                  "body": $input.json('$')
+                }
+          response:
+            statusCodes:
+              200:
+                pattern: ''
+                template: $input.body
+
+  ModificarProducto:
+    handler: src/ModificarProducto.ModificarProducto
+    events:
+      - http:
+          path: productos/modificar
+          method: put
+          cors: true
+          integration: lambda
+          request:
+            template:
+              application/json: |
+                {
+                  "headers": {
+                    #foreach($h in $input.params().header.keySet())
+                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
+                    #end
+                  },
+                  "body": $input.json('$')
+                }
+          response:
+            statusCodes:
+              200:
+                pattern: ''
+                template: $input.body
+
+  EliminarProducto:
+    handler: src/EliminarProducto.EliminarProducto
+    events:
+      - http:
+          path: productos/eliminar
+          method: delete
+          cors: true
+          integration: lambda
+          request:
+            template:
+              application/json: |
+                {
+                  "headers": {
+                    #foreach($h in $input.params().header.keySet())
+                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"
+                    #if($foreach.hasNext),#end
+                    #end
+                  },
+                  "body": $input.json('$')
+                }
+          response:
+            statusCodes:
+              200:
+                pattern: ''
+                template: $input.body
+resources:
+  Resources:
+    ProductsDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: t_productos_${sls:stage}
+        AttributeDefinitions:
+          - AttributeName: tenant_id
+            AttributeType: S
+          - AttributeName: producto_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tenant_id
+            KeyType: HASH
+          - AttributeName: producto_id
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
