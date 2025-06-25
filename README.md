@@ -18,3 +18,7 @@
 - Crear MV Busqueda y ahí hacer lo de abajo.
 - Hacer docker volume create ElasticSearch
 - docker compose up -d
+
+- curl -X PUT http://3.85.39.193:9200/idx_productos
+- curl http://3.85.39.193:9200/idx_productos/_search?q=producto_id:nuevo_id
+- curl http://3.85.39.193:9200
