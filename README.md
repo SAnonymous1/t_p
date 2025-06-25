@@ -22,3 +22,4 @@
 - curl -X PUT http://3.85.39.193:9200/idx_productos
 - curl http://3.85.39.193:9200/idx_productos/_search?q=producto_id:nuevo_id
 - curl http://3.85.39.193:9200
+- curl "http://3.93.76.201:9200/idx_productos/_search?q=producto_id:producto2&pretty"
