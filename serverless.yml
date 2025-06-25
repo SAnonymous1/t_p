@@ -139,16 +139,6 @@ functions:
                 pattern: ''
                 template: $input.body
 
-  ActualizarProductos:
-    handler: src/ActualizarProductos.ActualizarProductos
-    events:
-      - stream:
-          type: dynamodb
-          arn:
-            Fn::GetAtt: [ ProductsDynamoDBTable, StreamArn ]
-          batchSize: 100
-          startingPosition: LATEST
-
 resources:
   Resources:
     ProductsDynamoDBTable:
