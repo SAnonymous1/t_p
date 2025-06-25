@@ -12,3 +12,7 @@
 - POST BuscarProducto
 - PUT ModificarProducto
 - DELETE EliminarProducto
+
+
+## Extra:
+- Hacer docker volume create ElasticSearch
