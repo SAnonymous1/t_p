@@ -15,4 +15,6 @@
 
 
 ## Extra:
+- Crear MV Busqueda y ahí hacer lo de abajo.
 - Hacer docker volume create ElasticSearch
+- docker compose up -d
