@@ -25,6 +25,7 @@
 - npm install @elastic/elasticsearch @aws-sdk/util-dynamodb tslib
 - Poner eso en un bucket s3 en un zip (LO DE node_modules e index.mjs)
 
+# index.mjs no debe ir en la máquina del microservicio Productos
 - curl -X PUT http://3.85.39.193:9200/idx_productos
 - curl http://3.85.39.193:9200/idx_productos/_search?q=producto_id:nuevo_id
 - curl http://3.85.39.193:9200
