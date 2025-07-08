@@ -6,6 +6,9 @@
 - index.mjs ES UN LAMBDA SEPARADO, NO OLVIDAR GATILLARLO AL STREAM DE LA TABLA t_productos_${sls:stage}
 - Producto-PROYECTO.postman_collection.json ES PARA PROBAR EN POSTMAN.
 
+## PUERTOS INBOUND RULES:
+- En el MV del microservicio, para Producto se usaron los puertos para asegurar: 80, 22, 443, 9200. Si falla, agregar 9300.
+- En el MV Búsqueda, para asegurar se usó: 80, 22, 443, 9200.
 ## PASOS:
 - Hacer git clone en la VM del microservicio e ingresar a su directorio
 - En el directorio, hacer "npm install aws-sdk"
