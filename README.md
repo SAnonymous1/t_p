@@ -1,4 +1,4 @@
-# t_p
+# ApiProductos-Farmacia
 
 ## IMPORTANTE:
 - BuscarProducto.js, CrearProducto.js, EliminarProducto.js, ListarProductos.js, ModificarProducto.js, validarToken.js y serverless.yml VAN EN UN SOLO LUGAR
