@@ -32,6 +32,9 @@
 - POST BuscarProducto
 - PUT ModificarProducto
 - DELETE EliminarProducto
+También se añadieron funciones de Usuario para seguir:
+- POST CrearUsuario
+- POST LoginUsuario
 
 # Curls para MV Búsqueda con Elastic Search
 - curl http://IP-DE-MV-BÚSQUEDA:9200/idx_productos/_search?q=producto_id:nuevo_id
