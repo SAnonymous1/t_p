@@ -7,10 +7,10 @@ provider:
   memorySize: 1024
   timeout: 30
   iam:
-    role: arn:aws:iam::111222333444:role/LabRole # PONER EL ID
+    role: arn:aws:iam::111222333444:role/LabRole   # PONER EL ID REAL
   environment:
     PRODUCTS_TABLE: t_productos_${sls:stage}
-    TOKENS_TABLE: t_tokens_acceso # CAMBIAR ESTO A LA TABLA DE TOKENS EN DYNAMO, ESTO SE LE PUEDE AGREGAR LO DE sls:stage EN UN FUTURO
+    TOKENS_TABLE: t_tokens_acceso-${sls:stage}
 
 functions:
   ListarProductos:
@@ -25,8 +25,10 @@ functions:
             template:
               application/json: |
                 {
-                  "headers": {#foreach($h in $input.params().header.keySet())
-                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end#end
+                  "headers": {
+                    #foreach($h in $input.params().header.keySet())
+                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
+                    #end
                   },
                   "body": $input.json('$')
                 }
@@ -48,11 +50,15 @@ functions:
             template:
               application/json: |
                 {
-                  "headers": { #foreach($h in $input.params().header.keySet()) "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end #end },
+                  "headers": {
+                    #foreach($h in $input.params().header.keySet())
+                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
+                    #end
+                  },
                   "body": $input.json('$')
                 }
           response:
-            statusCodes: 
+            statusCodes:
               200:
                 pattern: ''
                 template: $input.body
@@ -69,7 +75,11 @@ functions:
             template:
               application/json: |
                 {
-                  "headers": { #foreach($h in $input.params().header.keySet()) "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end #end },
+                  "headers": {
+                    #foreach($h in $input.params().header.keySet())
+                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
+                    #end
+                  },
                   "body": $input.json('$')
                 }
           response:
@@ -117,8 +127,7 @@ functions:
                 {
                   "headers": {
                     #foreach($h in $input.params().header.keySet())
-                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"
-                    #if($foreach.hasNext),#end
+                    "$h":"$util.escapeJavaScript($input.params().header.get($h))"#if($foreach.hasNext),#end
                     #end
                   },
                   "body": $input.json('$')
@@ -128,6 +137,7 @@ functions:
               200:
                 pattern: ''
                 template: $input.body
+
 resources:
   Resources:
     ProductsDynamoDBTable:
