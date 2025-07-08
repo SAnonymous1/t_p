@@ -7,13 +7,13 @@
 	},
 	"item": [
 		{
-			"name": "listar",
+			"name": "listar (PRODUCTO)",
 			"request": {
 				"method": "POST",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "e7650b3d-5f8c-418a-ba63-8013b990c9b9",
+						"value": "0a8fd41f-cda9-4f97-980c-254d0ad06884",
 						"type": "text"
 					}
 				],
@@ -27,10 +27,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://8x6ueb3uub.execute-api.us-east-1.amazonaws.com/dev/productos/listar",
+					"raw": "https://j14lgtrsu0.execute-api.us-east-1.amazonaws.com/dev/productos/listar",
 					"protocol": "https",
 					"host": [
-						"8x6ueb3uub",
+						"j14lgtrsu0",
 						"execute-api",
 						"us-east-1",
 						"amazonaws",
@@ -46,13 +46,13 @@
 			"response": []
 		},
 		{
-			"name": "crear",
+			"name": "crear (PRODUCTO)",
 			"request": {
 				"method": "POST",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "e7650b3d-5f8c-418a-ba63-8013b990c9b9",
+						"value": "0a8fd41f-cda9-4f97-980c-254d0ad06884",
 						"type": "text"
 					}
 				],
@@ -66,10 +66,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://8x6ueb3uub.execute-api.us-east-1.amazonaws.com/dev/productos/crear",
+					"raw": "https://j14lgtrsu0.execute-api.us-east-1.amazonaws.com/dev/productos/crear",
 					"protocol": "https",
 					"host": [
-						"8x6ueb3uub",
+						"j14lgtrsu0",
 						"execute-api",
 						"us-east-1",
 						"amazonaws",
@@ -85,13 +85,13 @@
 			"response": []
 		},
 		{
-			"name": "buscar",
+			"name": "buscar (PRODUCTO)",
 			"request": {
 				"method": "POST",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "e7650b3d-5f8c-418a-ba63-8013b990c9b9",
+						"value": "0a8fd41f-cda9-4f97-980c-254d0ad06884",
 						"type": "text"
 					}
 				],
@@ -105,10 +105,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://8x6ueb3uub.execute-api.us-east-1.amazonaws.com/dev/productos/buscar",
+					"raw": "https://j14lgtrsu0.execute-api.us-east-1.amazonaws.com/dev/productos/buscar",
 					"protocol": "https",
 					"host": [
-						"8x6ueb3uub",
+						"j14lgtrsu0",
 						"execute-api",
 						"us-east-1",
 						"amazonaws",
@@ -124,13 +124,13 @@
 			"response": []
 		},
 		{
-			"name": "modificar",
+			"name": "modificar (PRODUCTO)",
 			"request": {
 				"method": "PUT",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "e7650b3d-5f8c-418a-ba63-8013b990c9b9",
+						"value": "0a8fd41f-cda9-4f97-980c-254d0ad06884",
 						"type": "text"
 					}
 				],
@@ -144,10 +144,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://8x6ueb3uub.execute-api.us-east-1.amazonaws.com/dev/productos/modificar",
+					"raw": "https://j14lgtrsu0.execute-api.us-east-1.amazonaws.com/dev/productos/modificar",
 					"protocol": "https",
 					"host": [
-						"8x6ueb3uub",
+						"j14lgtrsu0",
 						"execute-api",
 						"us-east-1",
 						"amazonaws",
@@ -163,13 +163,13 @@
 			"response": []
 		},
 		{
-			"name": "eliminar",
+			"name": "eliminar (PRODUCTO)",
 			"request": {
 				"method": "DELETE",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "e7650b3d-5f8c-418a-ba63-8013b990c9b9",
+						"value": "52f146af-6a4c-47b2-91bf-2d5e9cd30473",
 						"type": "text"
 					}
 				],
@@ -183,10 +183,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://8x6ueb3uub.execute-api.us-east-1.amazonaws.com/dev/productos/eliminar",
+					"raw": "https://j14lgtrsu0.execute-api.us-east-1.amazonaws.com/dev/productos/eliminar",
 					"protocol": "https",
 					"host": [
-						"8x6ueb3uub",
+						"j14lgtrsu0",
 						"execute-api",
 						"us-east-1",
 						"amazonaws",
@@ -196,6 +196,72 @@
 						"dev",
 						"productos",
 						"eliminar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "crear (USUARIO)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " { \"tenant_id\": \"Inkafarma\", \"user_id\": \"user1@gmail.com\", \"password\": \"password\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://xzfqafbtzd.execute-api.us-east-1.amazonaws.com/dev/usuarios/crear",
+					"protocol": "https",
+					"host": [
+						"xzfqafbtzd",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"usuarios",
+						"crear"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login (USUARIO)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " { \"tenant_id\": \"Inkafarma\", \"user_id\": \"user1@gmail.com\", \"password\": \"password\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://xzfqafbtzd.execute-api.us-east-1.amazonaws.com/dev/usuarios/login",
+					"protocol": "https",
+					"host": [
+						"xzfqafbtzd",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"usuarios",
+						"login"
 					]
 				}
 			},
