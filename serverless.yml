@@ -10,8 +10,7 @@ provider:
     role: arn:aws:iam::111222333444:role/LabRole   # PONER EL ID REAL
   environment:
     PRODUCTS_TABLE: t_productos_${sls:stage}
-    TOKENS_TABLE: t_tokens_acceso
-    ES_HOST: http://13.222.29.76:9200
+    TOKENS_TABLE: t_tokens_acceso-${sls:stage}
 
 functions:
   ListarProductos:
@@ -157,5 +156,4 @@ resources:
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         StreamSpecification:
-          StreamEnabled: true
           StreamViewType: NEW_AND_OLD_IMAGES
